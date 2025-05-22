@@ -1,13 +1,16 @@
-J’ai restreint l’accès aux autres domaines.
+Fonctionnalités mises en place
+Blocage de l'accès aux domaines non autorisés.
 
-J’ai désactivé le menu de développement (F12) ainsi que le clic droit.
+Désactivation du menu de développement (F12) et du clic droit.
 
-Le nom d'utilisateur est passé en paramètre.
+Passage du nom d'utilisateur (username) en paramètre.
 
-J’empêche l’ouverture de nouveaux onglets dans le navigateur.
+Blocage de l'ouverture de nouveaux onglets du navigateur.
 
-Le WebView s’adapte dynamiquement au formulaire.
-👉 Documentation WebView2 - Microsoft
+Intégration d’un composant WebView2 flexible et adaptable au formulaire.
+
+Pour plus d'informations sur WebView2, consulter la [documentation](https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core?view=webview2-dotnet-1.0.3240.44).
+
 
 https://github.com/user-attachments/assets/986dbca0-14b7-4eda-a9a8-c8e00658f543
 
