@@ -15,11 +15,17 @@ namespace WebIntegrationApp
     {
         // Configuration des restrictions de navigation
         private const string ALLOWED_DOMAIN = "w3schools.com";
-        private const string DEFAULT_URL = "https://www.w3schools.com/";
         private const string RESTRICTION_MESSAGE = "Navigation limitée au domaine " + ALLOWED_DOMAIN + " uniquement.";
+        
+        private const string BASE_URL = "https://www.w3schools.com/";
+        private readonly string _username;
+        
+        // Encode les caractères spéciaux du username pour éviter de casser l'URL
+        private string DEFAULT_URL => $"{BASE_URL}?username={Uri.EscapeDataString(_username)}";
 
-        public Form3()
+        public Form3(string username = "anonymous")
         {
+            _username = string.IsNullOrWhiteSpace(username) ? "anonymous" : username;
             InitializeComponent();
             InitializeAsync();
         }
