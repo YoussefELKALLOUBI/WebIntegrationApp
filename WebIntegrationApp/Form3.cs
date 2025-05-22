@@ -13,6 +13,10 @@ namespace WebIntegrationApp
 {
     public partial class Form3 : Form
     {
+        private const string ALLOWED_DOMAIN = "w3schools.com";
+        private const string DEFAULT_URL = "https://www.w3schools.com/";
+        private const string RESTRICTION_MESSAGE = "Navigation limitée au domaine "+ ALLOWED_DOMAIN + " uniquement.";
+
         public Form3()
         {
             InitializeComponent();
@@ -20,39 +24,40 @@ namespace WebIntegrationApp
         }
         async void InitializeAsync()
         {
-            await webView2RechercheIA.EnsureCoreWebView2Async(null);
+            try
+            {
+                await webView2RechercheIA.EnsureCoreWebView2Async(null);
+                ConfigureWebView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur d'initialisation WebView2: {ex.Message}",
+                               "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-            // Limitation des fonctionnalités du navigateur
-            webView2RechercheIA.CoreWebView2.Settings.AreDevToolsEnabled = false;
-            webView2RechercheIA.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            webView2RechercheIA.CoreWebView2.Settings.IsStatusBarEnabled = false;
+        private void ConfigureWebView()
+        {
+            var settings = webView2RechercheIA.CoreWebView2.Settings;
+            settings.AreDevToolsEnabled = false;
+            settings.AreDefaultContextMenusEnabled = false;
+            settings.IsStatusBarEnabled = false;
+            
+            //settings.IsWebMessageEnabled = false;
+            //settings.AreDefaultScriptDialogsEnabled = false;
 
-            // Configurer les événements après l'initialisation 
+            // Événements
             webView2RechercheIA.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-
-            // Événement pour intercepter l'ouverture de nouvelles fenêtres
             webView2RechercheIA.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
         }
 
-
         private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            // Vérifier le domaine de destination
-            Uri uri;
-            if (Uri.TryCreate(e.Uri, UriKind.Absolute, out uri))
+            if (!IsAllowedDomain(e.Uri))
             {
-                if (!uri.Host.EndsWith("w3schools.com"))
-                {
-                    // Annuler la navigation si ce n'est pas le bon domaine
-                    e.Cancel = true;
-                    MessageBox.Show("Navigation limitée au domaine X uniquement.",
-                                    "Navigation restreinte : NavigationStarting",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-
-                    // Rediriger vers la page d'accueil de w3schools.com
-                    webView2RechercheIA.CoreWebView2.Navigate("https://www.w3schools.com/");
-                }
+                e.Cancel = true;
+                ShowRestrictionMessage("NavigationStarting");
+                NavigateToDefault();
             }
         }
 
@@ -62,28 +67,42 @@ namespace WebIntegrationApp
             // Annuler l'ouverture de la nouvelle fenêtre
             e.Handled = true;
 
-            // Vérifier le domaine de destination
-            Uri uri;
-            if (Uri.TryCreate(e.Uri, UriKind.Absolute, out uri) && uri.Host.EndsWith("w3schools.com"))
+            // Vérifier si le domaine de destination est autorisé
+            if (IsAllowedDomain(e.Uri))
             {
                 // Rediriger vers la même WebView plutôt que d'ouvrir une nouvelle fenêtre
                 webView2RechercheIA.CoreWebView2.Navigate(e.Uri);
             }
             else
             {
-                // Si ce n'est pas w3schools.com, informer l'utilisateur et ne pas naviguer
-                MessageBox.Show("Navigation limitée au domaine X uniquement.",
-                                "Navigation restreinte : NewWindowRequested",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                // Si ce n'est pas le domaine autorisé, informer l'utilisateur
+                ShowRestrictionMessage("NewWindowRequested");
             }
+        }
+
+        private void ShowRestrictionMessage(string context)
+        {
+            MessageBox.Show(RESTRICTION_MESSAGE,
+                           $"Navigation restreinte : {context}",
+                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private bool IsAllowedDomain(string url)
+        {
+            return Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
+                   uri.Host.EndsWith(ALLOWED_DOMAIN, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void NavigateToDefault()
+        {
+            webView2RechercheIA.CoreWebView2?.Navigate(DEFAULT_URL);
         }
 
         private void btnRechercheIA_Click_1(object sender, EventArgs e)
         {
             if (webView2RechercheIA != null && webView2RechercheIA.CoreWebView2 != null)
             {
-                webView2RechercheIA.CoreWebView2.Navigate("https://www.w3schools.com/");
+                NavigateToDefault();
             }
         }
 
