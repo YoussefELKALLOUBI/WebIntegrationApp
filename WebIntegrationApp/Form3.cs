@@ -13,15 +13,20 @@ namespace WebIntegrationApp
 {
     public partial class Form3 : Form
     {
+        // Configuration des restrictions de navigation
         private const string ALLOWED_DOMAIN = "w3schools.com";
         private const string DEFAULT_URL = "https://www.w3schools.com/";
-        private const string RESTRICTION_MESSAGE = "Navigation limitée au domaine "+ ALLOWED_DOMAIN + " uniquement.";
+        private const string RESTRICTION_MESSAGE = "Navigation limitée au domaine " + ALLOWED_DOMAIN + " uniquement.";
 
         public Form3()
         {
             InitializeComponent();
             InitializeAsync();
         }
+
+        /// <summary>
+        /// Initialise de manière asynchrone le composant WebView2
+        /// </summary>
         async void InitializeAsync()
         {
             try
@@ -36,21 +41,26 @@ namespace WebIntegrationApp
             }
         }
 
+        /// <summary>
+        /// Configure les paramètres de sécurité et les gestionnaires d'événements du WebView2
+        /// </summary>
         private void ConfigureWebView()
         {
             var settings = webView2RechercheIA.CoreWebView2.Settings;
+
+            // Désactiver les outils de développement et menus contextuels
             settings.AreDevToolsEnabled = false;
             settings.AreDefaultContextMenusEnabled = false;
             settings.IsStatusBarEnabled = false;
-            
-            //settings.IsWebMessageEnabled = false;
-            //settings.AreDefaultScriptDialogsEnabled = false;
 
-            // Événements
+            // Attacher les gestionnaires d'événements pour contrôler la navigation
             webView2RechercheIA.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
             webView2RechercheIA.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
         }
 
+        /// <summary>
+        /// Contrôle la navigation et bloque les domaines non autorisés
+        /// </summary>
         private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
             if (!IsAllowedDomain(e.Uri))
@@ -61,25 +71,27 @@ namespace WebIntegrationApp
             }
         }
 
-        // Intercepter les demandes d'ouverture de nouvelle fenêtre
+        /// <summary>
+        /// Intercepte les demandes d'ouverture de nouvelle fenêtre et les redirige dans la WebView actuelle
+        /// </summary>
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
-            // Annuler l'ouverture de la nouvelle fenêtre
             e.Handled = true;
 
-            // Vérifier si le domaine de destination est autorisé
             if (IsAllowedDomain(e.Uri))
             {
-                // Rediriger vers la même WebView plutôt que d'ouvrir une nouvelle fenêtre
+                // Rediriger dans la même WebView au lieu d'ouvrir une nouvelle fenêtre
                 webView2RechercheIA.CoreWebView2.Navigate(e.Uri);
             }
             else
             {
-                // Si ce n'est pas le domaine autorisé, informer l'utilisateur
                 ShowRestrictionMessage("NewWindowRequested");
             }
         }
 
+        /// <summary>
+        /// Affiche un message d'information sur les restrictions de navigation
+        /// </summary>
         private void ShowRestrictionMessage(string context)
         {
             MessageBox.Show(RESTRICTION_MESSAGE,
@@ -87,28 +99,39 @@ namespace WebIntegrationApp
                            MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Vérifie si l'URL appartient au domaine autorisé
+        /// </summary>
         private bool IsAllowedDomain(string url)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
                    uri.Host.EndsWith(ALLOWED_DOMAIN, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Navigue vers l'URL par défaut
+        /// </summary>
         private void NavigateToDefault()
         {
             webView2RechercheIA.CoreWebView2?.Navigate(DEFAULT_URL);
         }
 
+        /// <summary>
+        /// Gestionnaire du clic sur le bouton de recherche IA
+        /// </summary>
         private void btnRechercheIA_Click_1(object sender, EventArgs e)
         {
-            if (webView2RechercheIA != null && webView2RechercheIA.CoreWebView2 != null)
+            if (webView2RechercheIA?.CoreWebView2 != null)
             {
                 NavigateToDefault();
             }
         }
 
+        /// <summary>
+        /// Configure l'ancrage du WebView2 lors du chargement du formulaire
+        /// </summary>
         private void Form3_Load(object sender, EventArgs e)
         {
-            // Dans le constructeur du formulaire ou dans Form_Load
             webView2RechercheIA.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
         }
     }
