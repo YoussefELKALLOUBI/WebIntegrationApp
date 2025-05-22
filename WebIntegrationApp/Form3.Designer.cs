@@ -37,9 +37,9 @@
             // 
             btnRechercheIA.Location = new Point(26, 25);
             btnRechercheIA.Name = "btnRechercheIA";
-            btnRechercheIA.Size = new Size(132, 42);
+            btnRechercheIA.Size = new Size(165, 42);
             btnRechercheIA.TabIndex = 0;
-            btnRechercheIA.Text = "Recherche IA";
+            btnRechercheIA.Text = "Recherche IA ✨";
             btnRechercheIA.UseVisualStyleBackColor = true;
             btnRechercheIA.Click += btnRechercheIA_Click_1;
             // 
