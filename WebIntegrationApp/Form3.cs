@@ -1,25 +1,16 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace WebIntegrationApp
 {
     public partial class Form3 : Form
     {
         // Configuration des restrictions de navigation
-        private const string ALLOWED_DOMAIN = "w3schools.com";
+        private const string ALLOWED_DOMAIN = "github.com";
         private const string RESTRICTION_MESSAGE = "Navigation limitée au domaine " + ALLOWED_DOMAIN + " uniquement.";
-        
-        private const string BASE_URL = "https://www.w3schools.com/";
+
+        private const string BASE_URL = "https://github.com/YoussefELKALLOUBI/WebIntegrationApp";
         private readonly string _username;
-        
+
         // Encode les caractères spéciaux du username pour éviter de casser l'URL
         private string DEFAULT_URL => $"{BASE_URL}?username={Uri.EscapeDataString(_username)}";
 
@@ -60,19 +51,43 @@ namespace WebIntegrationApp
             settings.IsStatusBarEnabled = false;
 
             // Attacher les gestionnaires d'événements pour contrôler la navigation
-            webView2RechercheIA.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;            
+            // Déclenché avant qu'une navigation ne commence
+            webView2RechercheIA.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
             webView2RechercheIA.CoreWebView2.NavigationStarting += (s, e) => {
                 btnRechercheIA.Text = "Chargement...";
                 btnRechercheIA.Enabled = false;
             };
 
+            // Déclenché après qu'une navigation soit terminée
             webView2RechercheIA.CoreWebView2.NavigationCompleted += (s, e) => {
                 btnRechercheIA.Text = "Nouvelle recherche IA ✨";
                 btnRechercheIA.Enabled = true;
             };
 
+            // Déclenché à la demande d'ouverture d'une nouvelle fenêtre
             webView2RechercheIA.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
+        }
+
+        /// <summary>
+        /// Configure l'ancrage du WebView2 lors du chargement du formulaire
+        /// </summary>
+        private void Form3_Load(object sender, EventArgs e)
+        {
+            webView2RechercheIA.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
+            StyleButton();
+        }
+
+        /// <summary>
+        /// Gestionnaire du clic sur le bouton de recherche IA
+        /// </summary>
+        private void btnRechercheIA_Click_1(object sender, EventArgs e)
+        {
+            btnRechercheIA.Text = "Nouvelle recherche IA ✨";
+            if (webView2RechercheIA?.CoreWebView2 != null)
+            {
+                NavigateToDefault();
+            }
         }
 
         /// <summary>
@@ -97,23 +112,13 @@ namespace WebIntegrationApp
 
             if (IsAllowedDomain(e.Uri))
             {
-                // Rediriger dans la même WebView au lieu d'ouvrir une nouvelle fenêtre
+                // Rediriger dans la même WebView
                 webView2RechercheIA.CoreWebView2.Navigate(e.Uri);
             }
             else
             {
                 ShowRestrictionMessage("NewWindowRequested");
             }
-        }
-
-        /// <summary>
-        /// Affiche un message d'information sur les restrictions de navigation
-        /// </summary>
-        private void ShowRestrictionMessage(string context)
-        {
-            MessageBox.Show(RESTRICTION_MESSAGE,
-                           $"Navigation restreinte : {context}",
-                           MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -134,25 +139,15 @@ namespace WebIntegrationApp
         }
 
         /// <summary>
-        /// Gestionnaire du clic sur le bouton de recherche IA
+        /// Affiche un message d'information sur les restrictions de navigation
         /// </summary>
-        private void btnRechercheIA_Click_1(object sender, EventArgs e)
+        private void ShowRestrictionMessage(string context)
         {
-            btnRechercheIA.Text = "Nouvelle recherche IA ✨";
-            if (webView2RechercheIA?.CoreWebView2 != null)
-            {
-                NavigateToDefault();
-            }
+            MessageBox.Show(RESTRICTION_MESSAGE,
+                           $"Navigation restreinte : {context}",
+                           MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        /// <summary>
-        /// Configure l'ancrage du WebView2 lors du chargement du formulaire
-        /// </summary>
-        private void Form3_Load(object sender, EventArgs e)
-        {
-            webView2RechercheIA.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
-            StyleButton();
-        }
         private void StyleButton()
         {
             btnRechercheIA.BackColor = Color.FromArgb(114, 137, 218);
