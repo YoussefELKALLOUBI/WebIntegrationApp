@@ -22,7 +22,7 @@ Cette application intègre un navigateur web sécurisé basé sur WebView2, con�
 
 ## 📚 Documentation
 
-Pour plus d'informations techniques sur WebView2, consultez la [documentation officielle Microsoft](https://docs.microsoft.com/en-us/microsoft-edge/webview2/).
+Pour plus d'informations techniques sur WebView2, consultez la [documentation webview2](https://docs.microsoft.com/en-us/microsoft-edge/webview2/) et [documentation corewebview2]([https://docs.microsoft.com/en-us/microsoft-edge/webview2/](https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2?view=webview2-dotnet-1.0.3240.44))
 
 ## 🎯 Démo
 
