@@ -1,16 +1,30 @@
-Fonctionnalités mises en place
-Blocage de l'accès aux domaines non autorisés.
+# Application WebView2
 
-Désactivation du menu de développement (F12) et du clic droit.
+## 📋 Vue d'ensemble
 
-Passage du nom d'utilisateur (username) en paramètre.
+Cette application intègre un navigateur web sécurisé basé sur WebView2, conçu pour offrir une expérience de navigation contrôlée et sécurisée.
 
-Blocage de l'ouverture de nouveaux onglets du navigateur.
+## ✨ Fonctionnalités
 
-Intégration d’un composant WebView2 flexible et adaptable au formulaire.
+### 🔒 Sécurité et Contrôle d'accès
+- **Filtrage de domaines** : Accès restreint aux domaines autorisés uniquement
+- **Désactivation des outils de développement** : Blocage de la touche F12 et du menu développeur
+- **Protection du clic droit** : Désactivation du menu contextuel pour éviter l'accès aux fonctions avancées
 
-Pour plus d'informations sur WebView2, consulter la [documentation](https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core?view=webview2-dotnet-1.0.3240.44).
+### 🚀 Fonctionnalités avancées
+- **Authentification utilisateur** : Passage du nom d'utilisateur en paramètre pour la personnalisation
+- **Gestion des onglets** : Blocage de l'ouverture de nouveaux onglets pour maintenir le contrôle de la navigation
+- **Interface adaptative** : Composant WebView2 flexible qui s'adapte automatiquement au formulaire parent
 
+## 🛠️ Technologies utilisées
+
+- **WebView2** : Moteur de rendu web moderne basé sur Microsoft Edge
+
+## 📚 Documentation
+
+Pour plus d'informations techniques sur WebView2, consultez la [documentation officielle Microsoft](https://docs.microsoft.com/en-us/microsoft-edge/webview2/).
+
+## 🎯 Démo
 
 https://github.com/user-attachments/assets/986dbca0-14b7-4eda-a9a8-c8e00658f543
 
